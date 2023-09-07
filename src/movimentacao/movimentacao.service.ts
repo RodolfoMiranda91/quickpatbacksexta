@@ -32,12 +32,12 @@ export class MovimentacaoService {
   }
 
   async listarMovimentacao(): Promise<listaFunPatDTO[]> {
-    const resultado = await this.movimentacaoRepository
-      .createQueryBuilder('MOVIMENTACAO') 
+    var resultado = await (this.movimentacaoRepository
+      .createQueryBuilder('MOVIMENTACAO')
+      .select('f.NOME_COMPLETO', 'p.NOME') 
       .innerJoin('FUNCIONARIO', 'f', 'MOVIMENTACAO.IDFUNCIONARIO = f.ID')
       .innerJoin('PATRIMONIO', 'p', 'MOVIMENTACAO.IDPATRIMONIO = p.ID')
-      .select(['f.NOME_COMPLETO', 'p.NOME'])
-      .getRawMany();
+      .getRawMany());
 
      const listaRetorno = resultado.map(
         movimentacao => new listaFunPatDTO(

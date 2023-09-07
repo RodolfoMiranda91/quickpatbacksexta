@@ -25,6 +25,11 @@ export class MovimentacoesArmazenadas{
         return possivelMovimentacao
     }
 
+    async MovimentacaoByID(id: string){
+        const movimentacao = this.buscaPorID(id);
+        return movimentacao;
+    }
+
     async atualizaMovimentacao(id: string, dadosAtualizacao: Partial<MOVIMENTACAO>){
         const movimentacao = this.buscaPorID(id);
 
