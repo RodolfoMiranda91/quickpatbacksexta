@@ -1,4 +1,3 @@
-import { MOVIMENTACAO } from "src/movimentacao/movimentacao.entity";
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 
 
@@ -24,7 +23,4 @@ export class FUNCIONARIO{
 
     @Column()
     DEPARTAMENTO: string;
-
-    @OneToMany(() => MOVIMENTACAO, movimentacao => movimentacao.IDFUNCIONARIO)
-    movimentacao: MOVIMENTACAO[];
 }

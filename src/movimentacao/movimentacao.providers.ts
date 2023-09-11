@@ -7,4 +7,4 @@ export const movimentacaoProviders = [
     useFactory: (dataSource: DataSource) => dataSource.getRepository(MOVIMENTACAO),
     inject: ['DATA_SOURCE'],
   },
-];///....
+];

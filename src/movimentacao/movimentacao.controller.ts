@@ -1,8 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { RetornoCadastroDTO, RetornoObjDTO } from "src/dto/retorno.dto";
 import { AlteraMovimentacaoDTO } from "./dto/atualizaMovimentacao.dto";
-import { listaFunPatDTO, listaMovimentacaoDTO } from "./dto/listaMovimentacao.dto";
-import { CriaMovimentacaoDTO } from "./dto/movimentacao.dto";
+import { CriaMovimentacaoDTO } from "./dto/criaMovimentacao.dto";
 import { MOVIMENTACAO } from "./movimentacao.entity";
 import { MovimentacaoService } from "./movimentacao.service";
 
@@ -17,12 +16,7 @@ export class MovimentacaoController{
     async listar(): Promise<MOVIMENTACAO[]>{
         return this.movimentacaoService.listar();
     }
-
-    @Get('listarMovimentacao')
-    async listarMovimentacao(): Promise<listaFunPatDTO[]>{
-        return this.movimentacaoService.listarMovimentacao();
-    }
-
+    
     @Post('')
     async cria(@Body() dados: CriaMovimentacaoDTO): Promise<RetornoCadastroDTO>{        
         return this.movimentacaoService.inserir(dados)        

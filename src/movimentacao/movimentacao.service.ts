@@ -2,14 +2,8 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { RetornoCadastroDTO, RetornoObjDTO } from 'src/dto/retorno.dto';
 import {v4 as uuid} from 'uuid';
-import { MOVIMENTACAO } from './movimentacao.entity';
-import { listaFunPatDTO, listaMovimentacaoDTO } from './dto/listaMovimentacao.dto';
-import { CriaMovimentacaoDTO } from './dto/movimentacao.dto';
+import { MOVIMENTACAO } from './movimentacao.entity';import { CriaMovimentacaoDTO } from './dto/criaMovimentacao.dto';
 import { AlteraMovimentacaoDTO } from './dto/atualizaMovimentacao.dto';
-import { FUNCIONARIO } from 'src/funcionario/funcionario.entity';
-import { FuncionarioService } from 'src/funcionario/funcionario.service';
-import { PATRIMONIO } from 'src/patrimonio/patrimonio.entity';
-import { PatrimonioService } from 'src/patrimonio/patrimonio.service';
 
 @Injectable()
 
@@ -17,43 +11,18 @@ export class MovimentacaoService {
   constructor(
     @Inject('MOVIMENTACAO_REPOSITORY')
     private movimentacaoRepository: Repository<MOVIMENTACAO>,
-
-    @Inject('FUNCIONARIO_REPOSITORY')
-    private funcionarioRepository: Repository<FUNCIONARIO>,  
-    private readonly funcionarioService: FuncionarioService,
-
-    @Inject('PATRIMONIO_REPOSITORY')
-    private patrimonioRepository: Repository<PATRIMONIO>,  
-    private readonly patrimonioService: PatrimonioService
   ) {} 
 
   async listar(): Promise<MOVIMENTACAO[]> {
     return this.movimentacaoRepository.find();
   }
 
-  async listarMovimentacao(): Promise<listaFunPatDTO[]> {
-    var resultado = await (this.movimentacaoRepository
-      .createQueryBuilder('MOVIMENTACAO')
-      .select('f.NOME_COMPLETO', 'p.NOME') 
-      .innerJoin('FUNCIONARIO', 'f', 'MOVIMENTACAO.IDFUNCIONARIO = f.ID')
-      .innerJoin('PATRIMONIO', 'p', 'MOVIMENTACAO.IDPATRIMONIO = p.ID')
-      .getRawMany());
-
-     const listaRetorno = resultado.map(
-        movimentacao => new listaFunPatDTO(
-        movimentacao.FUNCIONARIO,
-        movimentacao.PATRIMONIO
-       )
-     );
-    return listaRetorno;
-  }
-
   async inserir(dados: CriaMovimentacaoDTO): Promise<RetornoCadastroDTO>{
     
     let movimentacao = new MOVIMENTACAO();
         movimentacao.ID = uuid();
-        movimentacao.IDFUNCIONARIO = await this.funcionarioService.localizarID(dados.IDFUNCIONARIO);
-        movimentacao.IDPATRIMONIO = await this.patrimonioService.localizarID(dados.IDPATRIMONIO);
+        movimentacao.FUNCIONARIO = dados.FUNCIONARIO;
+        movimentacao.PATRIMONIO = dados.PATRIMONIO;
 
     return this.movimentacaoRepository.save(movimentacao)
     .then((result) => {
@@ -82,6 +51,8 @@ export class MovimentacaoService {
     return this.movimentacaoRepository.find({
       select:{
         ID:true,
+        FUNCIONARIO:true,
+        PATRIMONIO:true,
       }
     });
   }
@@ -113,20 +84,10 @@ export class MovimentacaoService {
               return;
           }
 
-          if(chave=== 'IDFUNCIONARIO'){
-            movimentacao['FUNCIONARIO'] = await this.funcionarioService.localizarID(valor);
-            return;
-           }
-
-          if(chave=== 'IDPATRIMONIO'){
-            movimentacao['PATRIMONIO'] = await this.patrimonioService.localizarID(valor);
-            return;
-          } 
-
           movimentacao[chave] = valor;
       }
     ) 
-
+    
     return this.movimentacaoRepository.save(movimentacao)
     .then((result) => {
       return <RetornoCadastroDTO>{

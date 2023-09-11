@@ -1,12 +1,12 @@
-import {  IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class AlteraMovimentacaoDTO{   
     @IsString()
-    @IsNotEmpty({message: "ID do Funcionário não pode ser vazio"})   
-    IDFUNCIONARIO: string;
+    @IsOptional()
+    FUNCIONARIO: string;
 
     @IsString()
-    @IsNotEmpty({message: "ID do Patrimonio não pode ser vazio"})
-    IDPATRIMONIO: string;
+    @IsOptional()
+    PATRIMONIO: string;
 }
 

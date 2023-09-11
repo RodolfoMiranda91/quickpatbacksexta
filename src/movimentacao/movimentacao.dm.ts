@@ -14,15 +14,15 @@ export class MovimentacoesArmazenadas{
     }   
 
     private buscaPorID(id: string){
-        const possivelMovimentacao = this.#movimentacoes.find(
-            movimentacaSalvo => movimentacaSalvo.ID === id
+        const possivelmovimentacao = this.#movimentacoes.find(
+            MovimentacaSalvo => MovimentacaSalvo.ID === id
         );
 
-        if(!possivelMovimentacao){
+        if(!possivelmovimentacao){
             throw new Error('Movimentação não encontrada');
         }
 
-        return possivelMovimentacao
+        return possivelmovimentacao
     }
 
     async MovimentacaoByID(id: string){
